@@ -1,15 +1,14 @@
-O#<clamp-open> SUB
+O<clamp-open> SUB
+    #1 = #<_hal[lowpass.spindle.out]>
+    O<clamp-open> IF [#1 GT 10] 
+        (DEBUG, CAN NOT OPEN SPINDLE WHILE ROTATING!)
+        M2 
+    O<clamp-open> ENDIF
+
 	M64 P1  ; turn motor on
-	M66 P1 L2 Q5 ; wait FALL on input    L1 rise
+	M66 P1 L4 Q5 ; wait FALL on input    L1 rise
 
-	O#<clamp-open-if> IF [#5399 EQ -1]  ; check on error of clamping
-		(DEBUG, CLAMP ERROR!)
-		M65 P1  ; turn motor off
-		M2
-	O#<clamp-open-if> ENDIF 
- 	
-	G4 P1.1 	
+	G4 P.7 	
 	M65 P1  ; turn motor off 	
-O#<clamp-open> ENDSUB
-
+O<clamp-open> ENDSUB
 M2

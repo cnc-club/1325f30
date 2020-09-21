@@ -28,4 +28,29 @@
                     </led>
                 </hbox>
         </vbox>
+
+        <button>
+            <halpin>"clamp-open"</halpin>
+            <text>"Разжим цанги"</text>
+            <height>4</height>
+        </button>
+        <hbox>
+            <label>
+              <text>"Цанга зажата"</text>
+              <font>("Helvetica",14)</font>
+            </label>
+            <led>
+              <halpin>"clamp-led"</halpin>
+              <size>25</size>
+              <on_color>"green"</on_color>
+              <off_color>"red"</off_color>
+            </led>
+        </hbox>
+        <button>
+            <halpin>"clamp-close"</halpin>
+            <text>"Зажим цанги"</text>
+            <height>4</height>
+        </button>
+
+
 </pyvcp>

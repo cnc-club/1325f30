@@ -13,6 +13,42 @@ loadrt abs names=abs.spindle
 loadrt lowpass names=lowpass.spindle
 loadrt scale names=scale.spindle
 
+loadrt message count=4 messages="Can not start spindle with no CLAMP!,No oil pressure,Spindle inverter fault,pass"
+addf message.0 servo-thread
+addf message.1 servo-thread
+addf message.2 servo-thread
+
+loadrt logic count=1 personality=0x102
+addf logic.0 servo-thread
+
+loadrt and2 count=3 
+addf and2.0 servo-thread
+
+loadrt not count=3
+addf not.0 servo-thread
+
+
+loadrt limit3
+addf limit3.0 servo-thread
+
+setp limit3.0.maxv 250 # 250 RPM/second
+setp limit3.0.enable true
+
+
+# Авост если цанга расжата и стартует шпиндель! 
+net clamp-not       => and2.0.in0           <= hm2_7i92.0.7i77.0.0.input-15-not
+net spindle-enable  => and2.0.in1
+net estop-spindle-not   => not.0.in         <= and2.0.out
+net estop-spindle       <= not.0.out
+
+
+net estop-in        <= logic.0.and
+net estop-out       => logic.0.in-00       
+net estop-spindle   => logic.0.in-01        => message.0.trigger
+
+
+
+
 addf hm2_7i92.0.read          servo-thread
 addf motion-command-handler   servo-thread
 addf motion-controller        servo-thread
@@ -171,7 +207,13 @@ setp   pid.s.error-previous-target true
 
 net spindle-index-enable  <=> pid.s.index-enable
 net spindle-enable        =>  pid.s.enable
-net spindle-vel-cmd-rpm     => pid.s.command
+
+net spindle-vel-cmd-rpm     => limit3.0.in
+net spindle-vel-cmd-rpm-limited     => limit3.0.out
+
+net spindle-vel-cmd-rpm-limited     => pid.s.command
+
+
 net spindle-vel-fb-rpm      => pid.s.feedback
 net spindle-output        <=  pid.s.output
 
@@ -271,7 +313,7 @@ net machine-is-enabled        <=  motion.motion-enabled
 #  ---estop signals---
 
 net estop-out     <=  iocontrol.0.user-enable-out
-net estop-out     =>  iocontrol.0.emc-enable-in
+net estop-in     =>  iocontrol.0.emc-enable-in
 
 #  ---toolchange signals for custom tool changer---
 

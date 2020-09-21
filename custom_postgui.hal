@@ -1,2 +1,8 @@
 # Include your custom_postgui HAL commands here
 # This file will not be overwritten when you run PNCconf again
+
+
+net clamp-open-mdi		<= pyvcp.clamp-open				=> halui.mdi-command-00
+net clamp-close-mdi		<= pyvcp.clamp-close 			=> halui.mdi-command-01
+net clamp				=> pyvcp.clamp-led
+
