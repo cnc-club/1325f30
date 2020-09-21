@@ -1,0 +1,93 @@
+component turret_1325f30 "LinuxCNC HAL for 1325f30 turret tool changer";
+pin in bit sens-##[32 : personality+1];
+pin in bit fix;
+pin in bit change;
+pin in s32 number;
+pin in bit reset;
+
+pin out bit fwd;
+pin out bit rev;
+pin out bit err;
+
+pin out bit changed;
+
+pin out s32 current-position;
+pin out s32 state;
+pin out float timer;
+pin out float timer-fix;
+
+param rw float timeout = 40.0;
+param rw float timeout-fix = 1.0;
+
+variable bool last_change;
+
+function _;
+description """
+Turret with one motor, fwd for unlock and rev for fixing. Individual sensors for each tool, and additional sensor for fixing.
+""";
+license "GPL"; // indicates GPL v2 or later
+;;
+
+
+
+// loadrt turret_1325f30 personality=10
+#define ERROR 0
+#define IDLE 1
+#define SEARCH 2
+#define FIX 3
+#define FIXED 4
+
+
+FUNCTION(_) {
+	for (int i = 0; i<personality; i++){
+		if (sens(i)){
+			current_position = i;
+			break;
+		}
+	}
+	switch (state){
+		case ERROR :
+			fwd = 0;
+			rev = 0;
+			err = 1;
+			if (reset) {err = 0; state = IDLE;}
+			break;
+		case IDLE :
+			fwd = 0;
+			rev = 0;
+			changed = 0;
+			if (change && !last_change) {
+				state = SEARCH;
+				timer = timeout;
+			}
+			break;
+		case SEARCH :
+			timer -= fperiod; 
+			if (timer < 0) state = ERROR; /// too long for tool selection! timeout reached
+			fwd = 1;
+			rev = 0;
+			if (current_position == number) {
+				state=FIX;
+				timer_fix = timeout_fix;
+			}
+			break;
+		case FIX :
+			timer_fix -= fperiod; 
+			if (timer_fix < 0) state = ERROR;  /// too long for FIX! timeout reached
+			fwd = 0;
+			rev = 1;
+			if (fix) {
+				if (current_position == number) state = FIXED;
+				else state = SEARCH; // Wrong instrument! Do the search again.
+			}		
+			break;
+		case FIXED :
+			fwd = 0;
+			rev = 0;
+			changed = 1;
+			if (!change) {state = IDLE;}		
+			break;		
+		
+	}	
+	last_change = change;
+}

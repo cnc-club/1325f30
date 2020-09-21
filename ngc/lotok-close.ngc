@@ -1,0 +1,7 @@
+O<lotok-close> SUB
+	M64 P2  ; turn motor on
+	M66 P3 L4 Q1 ; wait LOW on input
+	G4 P0.3
+	M65 P2  ; turn motor off 	
+O<lotok-close> ENDSUB
+

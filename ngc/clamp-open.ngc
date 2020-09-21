@@ -1,0 +1,15 @@
+O#<clamp-open> SUB
+	M64 P1  ; turn motor on
+	M66 P1 L2 Q5 ; wait FALL on input    L1 rise
+
+	O#<clamp-open-if> IF [#5399 EQ -1]  ; check on error of clamping
+		(DEBUG, CLAMP ERROR!)
+		M65 P1  ; turn motor off
+		M2
+	O#<clamp-open-if> ENDIF 
+ 	
+	G4 P1.1 	
+	M65 P1  ; turn motor off 	
+O#<clamp-open> ENDSUB
+
+M2

@@ -1,0 +1,55 @@
+# Include your custom HAL commands here
+# This file will not be overwritten when you run PNCconf again
+
+
+net x-enable hm2_7i92.0.7i77.0.0.output-08
+
+
+net clamp		<= hm2_7i92.0.7i77.0.0.input-15		=> motion.digital-in-01
+net lotok1		<= hm2_7i92.0.7i77.0.0.input-30		=> motion.digital-in-02
+net lotok2		<= hm2_7i92.0.7i77.0.0.input-31		=> motion.digital-in-03
+ 
+net clamp-motor		<= hm2_7i92.0.7i77.0.0.output-11		=> motion.digital-out-01
+net lotok-fwd		<= hm2_7i92.0.7i77.0.0.output-14		=> motion.digital-out-02
+net lotok-rev		<= hm2_7i92.0.7i77.0.0.output-15		=> motion.digital-out-03
+ 
+ 
+
+
+# -------- TOOL CHANGER --------
+
+loadrt turret_1325f30 personality=12
+
+addf turret-1325f30.0 servo-thread
+
+setp turret-1325f30.0.timeout 40
+setp turret-1325f30.0.timeout-fix 1
+
+net tool-change-request 		=> turret-1325f30.0.change
+net tool-change-confirmed 		<= turret-1325f30.0.changed
+net tool-number					<= turret-1325f30.0.number
+
+net tc-err						=> turret-1325f30.0.err
+net tc-reset					=> turret-1325f30.0.reset
+net tc-reset					<= iocontrol.0.user-request-enable
+
+net tc-current					<= turret-1325f30.0.current-position
+
+net tc-fwd		<= turret-1325f30.0.fwd		=> hm2_7i92.0.7i77.0.0.output-13
+net tc-rev		<= turret-1325f30.0.rev		=> hm2_7i92.0.7i77.0.0.output-12
+net tc-fix		=> turret-1325f30.0.fix		<= hm2_7i92.0.7i77.0.0.input-28
+net tc-01		=> turret-1325f30.0.sens-01	<= hm2_7i92.0.7i77.0.0.input-16
+net tc-02		=> turret-1325f30.0.sens-02	<= hm2_7i92.0.7i77.0.0.input-17
+net tc-03		=> turret-1325f30.0.sens-03	<= hm2_7i92.0.7i77.0.0.input-18
+net tc-04		=> turret-1325f30.0.sens-04	<= hm2_7i92.0.7i77.0.0.input-19
+net tc-05		=> turret-1325f30.0.sens-05	<= hm2_7i92.0.7i77.0.0.input-20
+net tc-06		=> turret-1325f30.0.sens-06	<= hm2_7i92.0.7i77.0.0.input-21
+net tc-07		=> turret-1325f30.0.sens-07	<= hm2_7i92.0.7i77.0.0.input-22
+net tc-08		=> turret-1325f30.0.sens-08	<= hm2_7i92.0.7i77.0.0.input-23
+net tc-09		=> turret-1325f30.0.sens-09	<= hm2_7i92.0.7i77.0.0.input-24
+net tc-10		=> turret-1325f30.0.sens-10	<= hm2_7i92.0.7i77.0.0.input-25
+net tc-11		=> turret-1325f30.0.sens-11	<= hm2_7i92.0.7i77.0.0.input-26
+net tc-12		=> turret-1325f30.0.sens-12	<= hm2_7i92.0.7i77.0.0.input-27
+
+# -------- TOOL CHANGER --------
+

@@ -1,0 +1,12 @@
+O<clamp-close> SUB
+	M64 P1  ; turn motor on
+	M66 P1 L1 Q3 ; wait RISE on input
+	M65 P1  ; turn motor off 	
+	O<clamp-close-if> IF [#5399 EQ -1]  ; check on error of clamping
+		(DEBUG, CLAMP ERROR!)
+		M2
+	O<clamp-close-if> ENDIF 
+ 	
+O<clamp-open> ENDSUB
+
+M2
