@@ -13,7 +13,14 @@ net clamp-motor		<= hm2_7i92.0.7i77.0.0.output-11		=> motion.digital-out-01
 net lotok-fwd		<= hm2_7i92.0.7i77.0.0.output-14		=> motion.digital-out-02
 net lotok-rev		<= hm2_7i92.0.7i77.0.0.output-15		=> motion.digital-out-03
  
+
+net clamp-open-mdi		<= hm2_7i92.0.7i77.0.0.input-05				=> halui.mdi-command-00
+net clamp-close-mdi		<= hm2_7i92.0.7i77.0.0.input-06 			=> halui.mdi-command-01
+net clamp				=> hm2_7i92.0.7i77.0.0.output-07
+
+net program-start	    <= hm2_7i92.0.7i77.0.0.input-07             => halui.program.run
  
+
 
 
 # -------- TOOL CHANGER --------
