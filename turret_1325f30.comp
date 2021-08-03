@@ -39,7 +39,8 @@ license "GPL"; // indicates GPL v2 or later
 
 
 FUNCTION(_) {
-	for (int i = 0; i<personality; i++){
+	int i;
+	for (i = 0; i<personality; i++){
 		if (sens(i)){
 			current_position = i;
 			break;
